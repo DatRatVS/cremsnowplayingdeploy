@@ -1,0 +1,26 @@
+{
+  "name": "Spotify",
+  "type": 2,
+  "url": null,
+  "details": "Song name",
+  "state": "Artist name",
+  "applicationId": null,
+  "timestamps": {
+    "start": "ISO 8601 timestamp",
+    "end": "ISO 8601 timestamp"
+  },
+  "party": {
+    "id": "spotify:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx"
+  },
+  "syncId": "xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+  "assets": {
+    "largeText": "Song name",
+    "smallText": null,
+    "largeImage": "spotify:xxxxxxxxxxxxxxxxxxxxxxxxxxxxxxxx",
+    "smallImage": null
+  },
+  "flags": 48,
+  "emoji": null,
+  "buttons": [],
+  "createdTimestamp": "timestamp in milliseconds as int"
+}

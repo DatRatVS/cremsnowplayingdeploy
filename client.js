@@ -7,8 +7,8 @@ require("dotenv").config();
 let tmiClient = null;
 
 const TOKEN_FILE = "twitch_token.json";
-const TARGET_CHANNEL = "itzdatrat";
-const DISCORD_USER_ID_TO_OBSERVE = "595905911814357013";
+const TARGET_CHANNEL = process.env.TARGET_CHANNEL;
+const DISCORD_USER_ID_TO_OBSERVE = process.env.DISCORD_USER_ID_TO_OBSERVE;
 
 const saveToken = (tokenData) => {
   fs.writeFileSync(TOKEN_FILE, JSON.stringify(tokenData, null, 2));
@@ -52,7 +52,7 @@ const clearTokenRefreshTimer = () => {
 const scheduleTokenRefresh = (expiresAtMs) => {
   clearTokenRefreshTimer();
   if (!expiresAtMs) return;
-  const refreshLeadTimeMs = 2 * 60 * 1000; // refresh 2 minutes before expiry
+  const refreshLeadTimeMs = 2 * 60 * 1000;
   const delayMs = Math.max(
     30 * 1000,
     expiresAtMs - Date.now() - refreshLeadTimeMs
@@ -220,7 +220,6 @@ const initializeTmiClient = async () => {
       throw new Error("No token data found. Please authenticate first.");
     }
 
-    // Check if token needs refresh
     let oauthToken;
     let effectiveTokenData = tokenData;
     if (Date.now() >= tokenData.expires_at) {

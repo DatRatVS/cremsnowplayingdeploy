@@ -1,0 +1,10 @@
+/.env
+/client - beforegpt5.js
+/context.txt
+/env.zip
+/example.json
+/index.html
+/latestSongInfo.json
+/node_modules
+/twitchcallback
+/twitch_token.json

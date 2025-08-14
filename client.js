@@ -5,24 +5,46 @@ const https = require("https");
 require("dotenv").config();
 
 let tmiClient = null;
+let inMemoryTokenData = null; // token kept only in process memory
 
 const TOKEN_FILE = "twitch_token.json";
+const DEFAULT_TOKEN_LIFETIME_MS = 4 * 60 * 60 * 1000; // 4 hours default
 const TARGET_CHANNEL = process.env.TARGET_CHANNEL;
 const DISCORD_USER_ID_TO_OBSERVE = process.env.DISCORD_USER_ID_TO_OBSERVE;
 
 const saveToken = (tokenData) => {
-  fs.writeFileSync(TOKEN_FILE, JSON.stringify(tokenData, null, 2));
+  // Persisting to disk is disabled; token is kept only in memory now
+  // fs.writeFileSync(TOKEN_FILE, JSON.stringify(tokenData, null, 2));
+  inMemoryTokenData = tokenData;
 };
 
 const loadToken = () => {
-  try {
-    if (fs.existsSync(TOKEN_FILE)) {
-      return JSON.parse(fs.readFileSync(TOKEN_FILE, "utf8"));
-    }
-  } catch (error) {
-    console.error("Error loading token:", error);
+  if (inMemoryTokenData) {
+    return inMemoryTokenData;
   }
+  // Loading from disk is disabled to avoid persisting tokens
+  // try {
+  //   if (fs.existsSync(TOKEN_FILE)) {
+  //     return JSON.parse(fs.readFileSync(TOKEN_FILE, "utf8"));
+  //   }
+  // } catch (error) {
+  //   console.error("Error loading token:", error);
+  // }
   return null;
+};
+
+// Bootstrap initial token from CLI args to avoid disk usage
+const [, , CLI_ACCESS_TOKEN, CLI_REFRESH_TOKEN] = process.argv;
+if (!CLI_ACCESS_TOKEN || !CLI_REFRESH_TOKEN) {
+  console.error(
+    "Usage: node client.js <twitch_access_token> <twitch_refresh_token>"
+  );
+  process.exit(1);
+}
+inMemoryTokenData = {
+  access_token: CLI_ACCESS_TOKEN,
+  refresh_token: CLI_REFRESH_TOKEN,
+  expires_at: Date.now() + DEFAULT_TOKEN_LIFETIME_MS,
 };
 
 const createTmiClient = (oauthToken) => {
